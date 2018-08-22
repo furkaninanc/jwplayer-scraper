@@ -1,0 +1,28 @@
+{
+  "name": "jwplayer-scraper",
+  "version": "1.0.0",
+  "description": "This module helps you get the source URLs of the media that is added to the JW Player in the page/iframes using node.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.test.js",
+    "prepublish": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/furkaninanc/jwplayer-scraper.git"
+  },
+  "keywords": [
+    "jwplayer",
+    "scraper",
+    "nodejs"
+  ],
+  "author": "Furkan Inanc",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/furkaninanc/jwplayer-scraper/issues"
+  },
+  "homepage": "https://github.com/furkaninanc/jwplayer-scraper#readme",
+  "dependencies": {
+    "puppeteer": "^1.7.0"
+  }
+}
