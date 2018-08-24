@@ -13,8 +13,7 @@ $ npm install --save jwplayer-scraper
 ## Usage
 
 ```js
-var jwplayerScraper = require("jwplayer-scraper");
-var scraper = new jwplayerScraper();
+var scraper = require("jwplayer-scraper");
 ```
 
 ### Functions
@@ -25,8 +24,7 @@ var scraper = new jwplayerScraper();
 - **options (optional):** For now, this can only contain an object with the _'jwplayerFilename'_ key, and it is set to _'jwplayer.js'_ as default.
 
 ```js
-var jwplayerScraper = require("jwplayer-scraper");
-var scraper = new jwplayerScraper();
+var scraper = require("jwplayer-scraper");
 
 (async function() {
   var sources = await scraper.getMediaSources(
@@ -43,8 +41,7 @@ var scraper = new jwplayerScraper();
 or if you want to use it with _.then()_ instead of async/await:
 
 ```js
-var jwplayerScraper = require("jwplayer-scraper");
-var scraper = new jwplayerScraper();
+var scraper = require("jwplayer-scraper");
 
 scraper
   .getMediaSources("https://<URL_OF_THE_WEBSITE>/<PATH_TO_THE_PAGE>")

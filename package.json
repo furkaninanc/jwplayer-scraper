@@ -1,6 +1,6 @@
 {
   "name": "jwplayer-scraper",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "This module helps you get the source URLs of the media that is added to the JW Player in the page/iframes using node.js",
   "main": "index.js",
   "scripts": {

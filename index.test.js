@@ -1,5 +1,4 @@
-var jwplayerScraper = require("./index.js");
-var scraper = new jwplayerScraper();
+var scraper = require("./index.js");
 var demoUrl =
   "https://developer.jwplayer.com/jw-player/demos/customization/custom-icons/";
 
