@@ -1,10 +1,11 @@
 /**
  * @description JW Player media sources scraper
  * @author Furkan Inanc
- * @version 1.1.0
+ * @version 1.2.0
  */
 
 let puppeteer = require("puppeteer");
+let request = require("request-promise");
 
 /**
  * A function to scrape JW Player media sources
@@ -17,7 +18,6 @@ module.exports.getMediaSources = function(pageUrl, options = {}) {
     let browser = await puppeteer.launch();
     let page = await browser.newPage();
 
-    let defaultJwplayerFilename = "jwplayer.js";
     let sources = [];
 
     /**
@@ -41,29 +41,51 @@ module.exports.getMediaSources = function(pageUrl, options = {}) {
      * We will intercept the 'jwplayer.js' file's request, so that we can manipulate the code
      * into giving us the media sources.
      */
-    page.on("request", async request => {
-      if (
-        ["script"].indexOf(request.resourceType()) !== -1 &&
-        request._url.indexOf(
-          options.jwplayerFilename
-            ? options.jwplayerFilename
-            : defaultJwplayerFilename
-        ) !== -1
-      ) {
-        /**
-         * This part stops the 'jwplayer.js' from loading, and responds with the code we've created to
-         * capture the media sources list instead.
-         */
-        request.respond({
-          contentType: "application/javascript",
-          body:
-            "function jwplayer(){return{setup:function(i){i.file?console.log(JSON.stringify({scrapeList:[{file:i.file}]})):i.sources?console.log(JSON.stringify({scrapeList:i.sources})):i.playlist&&$.get(i.playlist,function(i){var s=[];i.playlist.forEach(function(i){i.sources.forEach(function(i){s.push(i)})}),console.log(JSON.stringify({scrapeList:s}))})}}}"
-        });
+    page.on("request", async _request => {
+      if (["script"].indexOf(_request.resourceType()) !== -1) {
+        if (
+          options.jwplayerFilename &&
+          _request._url.indexOf(options.jwplayerFilename) !== -1
+        ) {
+          /**
+           * This part stops the 'jwplayer.js' from loading, and responds with the code we've created to
+           * capture the media sources list instead.
+           */
+          _request.respond({
+            contentType: "application/javascript",
+            body:
+              "function jwplayer(){return{setup:function(i){i.file?console.log(JSON.stringify({scrapeList:[{file:i.file}]})):i.sources?console.log(JSON.stringify({scrapeList:i.sources})):i.playlist&&$.get(i.playlist,function(i){var s=[];i.playlist.forEach(function(i){i.sources.forEach(function(i){s.push(i)})}),console.log(JSON.stringify({scrapeList:s}))})}}}"
+          });
+        } else if (!options.jwplayerFilename) {
+          let scriptContent = await request(_request._url);
+
+          if (scriptContent.toString().indexOf("jwplayer=function") !== -1) {
+            /**
+             * This part tries to locate the 'jwplayer.js' file by looking at all the script files' contents.
+             * (This is experimental)
+             */
+            _request.respond({
+              contentType: "application/javascript",
+              body:
+                "function jwplayer(){return{setup:function(i){i.file?console.log(JSON.stringify({scrapeList:[{file:i.file}]})):i.sources?console.log(JSON.stringify({scrapeList:i.sources})):i.playlist&&$.get(i.playlist,function(i){var s=[];i.playlist.forEach(function(i){i.sources.forEach(function(i){s.push(i)})}),console.log(JSON.stringify({scrapeList:s}))})}}}"
+            });
+          } else {
+            /**
+             * If it's not the 'jwplayer.js' file, it should continue with the request.
+             */
+            _request.continue();
+          }
+        } else {
+          /**
+           * If it's not the 'jwplayer.js' file, it should continue with the request.
+           */
+          _request.continue();
+        }
       } else {
         /**
-         * If it's not the 'jwplayer.js' file, it should continue with the request.
+         * If it's not a JS file, it should continue with the request.
          */
-        request.continue();
+        _request.continue();
       }
     });
 
