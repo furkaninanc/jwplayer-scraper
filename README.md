@@ -21,7 +21,7 @@ var scraper = require("jwplayer-scraper");
 #### scraper.getMediaSources(URL, options)
 
 - **URL:** URL of the page that needs to be scraped
-- **options (optional):** For now, this can only contain an object with the _'jwplayerFilename'_ key, and it is set to _'jwplayer.js'_ as default.
+- **options (optional):** For now, this can only contain an object with the _'jwplayerFilename'_ key. If it's not set, it will try to automatically locate the jwplayer.js file. (This is experimental)
 
 ```js
 var scraper = require("jwplayer-scraper");
