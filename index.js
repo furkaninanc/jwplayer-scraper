@@ -15,7 +15,7 @@ let request = require("request-promise");
  */
 module.exports.getMediaSources = function(pageUrl, options = {}) {
   return new Promise(async resolve => {
-    let browser = await puppeteer.launch();
+    let browser = await puppeteer.launch({headless: true, args: ['--no-sandbox']});
     let page = await browser.newPage();
 
     let sources = [];
