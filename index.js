@@ -17,6 +17,10 @@ module.exports.getMediaSources = function(pageUrl, options = {}) {
   return new Promise(async resolve => {
     let browser = await puppeteer.launch({headless: true,args: ['--no-sandbox', '--disable-setuid-sandbox']});
     let page = await browser.newPage();
+    /**
+    puppeteer should not time out
+    **/
+    await page.setDefaultNavigationTimeout(0);
 
     let sources = [];
 
